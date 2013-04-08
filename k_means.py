@@ -167,20 +167,18 @@ def output(cluster, matrix, out):
     #RI
     P = 0
     TP = 0
-    for i in range(len(purity)):
-        i += 1
-        if len(purity[i]) > 1:
-            P += len(purity[i]) * (len(purity[i]) - 1) / 2
-            for topic in purity[i]:
-                if purity[i][topic] > 1:
-                    TP += purity[i][topic] * (purity[i][topic] - 1) / 2
+    for i in range(len(purity.keys())):
+        if len(purity[purity.keys()[i]]) > 1:
+            P += sum(purity[purity.keys()[i]].values()) * (sum(purity[purity.keys()[i]].values()) - 1) / 2
+            for topic in purity[purity.keys()[i]]:
+                if purity[purity.keys()[i]][topic] > 1:
+                    TP += purity[purity.keys()[i]][topic] * (purity[purity.keys()[i]][topic] - 1) / 2
     FP = P - TP
     N = 0
-    for i in range(len(purity) - 1):
-        i += 1
+    for i in range(len(purity.keys()) - 1):
         j = 1
-        while i + j != len(purity):
-            N += len(purity[i]) * len(purity[i + j])
+        while i + j < len(purity.keys()):
+            N += sum(purity[purity.keys()[i]].values()) * sum(purity[purity.keys()[i + j]].values())
             j += 1
     FPTN = 0
     for i in range(len(out) - 1):
@@ -190,6 +188,7 @@ def output(cluster, matrix, out):
             FPTN += len(out[out.keys()[i]]) * len(out[out.keys()[i + j]])
             j += 1
     TN = FPTN - FP
+    print P, N
     print 'RI = ' + str(float(TP + TN) / float(P + N))
 
 

@@ -14,8 +14,8 @@ def searchnews(topic, news):
     while len(news[topic]) < 30:
         r = requests.get('https://api.datamarket.azure.com/Bing/Search/News?Query=' + query + '&$format=json&$skip='
                          + str(len(news[topic])) + '&$top=15',
-                         auth=('5LGuTa7bqSu7G0Mja1zfoyK/xgNj219OHm2p4hdOWn8=',
-                               '5LGuTa7bqSu7G0Mja1zfoyK/xgNj219OHm2p4hdOWn8='))
+                         auth=('vRPwDpjqDn8sycuI4Ayn3wKAcwHbzIZ/hzYNZcrHRnI=',
+                               'vRPwDpjqDn8sycuI4Ayn3wKAcwHbzIZ/hzYNZcrHRnI='))
         for i in r.json()['d']['results']:
             if i['Title'] not in news[topic]:
                 news[topic][i['Title']] = i['Description']
@@ -31,8 +31,8 @@ def searchcategory(topic, category, news):
         r = requests.get('https://api.datamarket.azure.com/Bing/Search/News?Query=%27' + topic +
                          '%27&NewsCategory=%27rt_' + category + '%27&$format=json&$skip='
                          + str(2 * len(news[category][topic])) + '&$top=15',
-                         auth=('5LGuTa7bqSu7G0Mja1zfoyK/xgNj219OHm2p4hdOWn8=',
-                               '5LGuTa7bqSu7G0Mja1zfoyK/xgNj219OHm2p4hdOWn8='))
+                         auth=('vRPwDpjqDn8sycuI4Ayn3wKAcwHbzIZ/hzYNZcrHRnI=',
+                               'vRPwDpjqDn8sycuI4Ayn3wKAcwHbzIZ/hzYNZcrHRnI='))
         for i in r.json()['d']['results']:
             if i['Title'] not in news[category][topic]:
                 news[category][topic][i['Title']] = i['Description']
