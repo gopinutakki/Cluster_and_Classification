@@ -1,4 +1,4 @@
-import requests
+import requests, json
 
 news = {}
 topic = ''
@@ -21,23 +21,25 @@ def searchnews(topic, news):
                 news[topic][i['Title']] = i['Description']
             if len(news[topic]) == 30:
                 break
-    file('./news.txt', 'w').writelines(str(news))
+    s = json.dumps(news)
+    f = open('./news.json', 'w')
+    f.write(s + "\n")
+    f.close()
 
 
 def searchcategory(topic, category, news):
     if category not in news:
         news[category] = {}
     news[category][topic] = {}
-    while len(news[category][topic]) < 15:
+    while len(news[category][topic]) < 13:
         r = requests.get('https://api.datamarket.azure.com/Bing/Search/News?Query=%27' + topic +
                          '%27&NewsCategory=%27rt_' + category + '%27&$format=json&$skip='
-                         + str(2 * len(news[category][topic])) + '&$top=15',
+                         + str(len(news[category][topic])) + '&$top=15',
                          auth=('vRPwDpjqDn8sycuI4Ayn3wKAcwHbzIZ/hzYNZcrHRnI=',
                                'vRPwDpjqDn8sycuI4Ayn3wKAcwHbzIZ/hzYNZcrHRnI='))
         for i in r.json()['d']['results']:
             if i['Title'] not in news[category][topic]:
                 news[category][topic][i['Title']] = i['Description']
                 print  len(news[category][topic])
-            if len(news[category][topic]) == 15:
+            if len(news[category][topic]) == 13:
                 break
-    file('./guess.txt', 'w').writelines(str(news))

@@ -16,7 +16,7 @@ def start(k, matrix):
         seed = list(set(seed))
 
     for i in seed:
-        centroid.append(matrix[i])
+        centroid.append(matrix[matrix.keys()[i]])
     return centroid
 
 
@@ -29,7 +29,7 @@ def start_optimal(k, matrix):
         seed = list(set(seed))
     print seed
     for i in seed:
-        centroid.append(matrix[i])
+        centroid.append(matrix[matrix.keys()[i]])
     return centroid
 
 
@@ -65,7 +65,7 @@ def kernel_cos(centroid, matrix, k):
 
     for i in range(len(matrix)):
         for j in range(k):
-            table[i][j] = multi(matrix[i], centroid[j])
+            table[i][j] = multi(matrix[matrix.keys()[i]], centroid[j])
 
     for i in table:
         if sum(i) == 0:
@@ -80,7 +80,7 @@ def kernel_cos(centroid, matrix, k):
         tmp = []
         for j in range(len(table)):
             if table[j][i]:
-                tmp.append(matrix[j])
+                tmp.append(matrix[matrix.keys()[j]])
         cluster.append(tmp)
 
     for i in cluster:
@@ -101,7 +101,7 @@ def kernel_euc(centroid, matrix, k):
 
     for i in range(len(matrix)):
         for j in range(k):
-            table[i][j] = euclidean(matrix[i], centroid[j])
+            table[i][j] = euclidean(matrix[matrix.keys()[i]], centroid[j])
 
     for i in table:
         for j in range(len(i)):
@@ -114,7 +114,7 @@ def kernel_euc(centroid, matrix, k):
         tmp = []
         for j in range(len(table)):
             if table[j][i]:
-                tmp.append(matrix[j])
+                tmp.append(matrix[matrix.keys()[j]])
         cluster.append(tmp)
 
     for i in cluster:
@@ -153,7 +153,7 @@ def rss(cluster, centroid):
     return s
 
 
-def output(cluster, matrix, out):
+def output(cluster, matrix, news):
     iterator = 1
     purity = {}
     for i in cluster:
@@ -162,15 +162,14 @@ def output(cluster, matrix, out):
         for j in range(len(i)):
             for n in matrix:
                 if matrix[n] == i[j]:
-                    for topic in out:
-                        for title in out[topic]:
-                            if out[topic][title] == n:
-                                print '  ' + topic + ': ' + title
-                                # purity
-                                if topic in purity[iterator]:
-                                    purity[iterator][topic] += 1
-                                else:
-                                    purity[iterator][topic] = 1
+                    for topic in news:
+                        if n in news[topic].keys():
+                            print '  ' + topic + ': ' + n
+                            # purity
+                            if topic in purity[iterator]:
+                                purity[iterator][topic] += 1
+                            else:
+                                purity[iterator][topic] = 1
         print
         iterator += 1
     print '================================================================='
@@ -200,11 +199,11 @@ def output(cluster, matrix, out):
             N += sum(purity[purity.keys()[i]].values()) * sum(purity[purity.keys()[i + j]].values())
             j += 1
     FPTN = 0
-    for i in range(len(out) - 1):
+    for i in range(len(news) - 1):
         i += 1
         j = 1
-        while i + j != len(out):
-            FPTN += len(out[out.keys()[i]]) * len(out[out.keys()[i + j]])
+        while i + j != len(news):
+            FPTN += len(news[news.keys()[i]]) * len(news[news.keys()[i + j]])
             j += 1
     TN = FPTN - FP
     print 'TP = ', TP, ' TN = ', TN, ' TP + FP =', P, 'TN + FN = ', N
@@ -240,7 +239,7 @@ def kmeans_euc(k, news):
 
 
 def kmeans_optimal(k, news):
-    matrix = tfidf_optimal(news)
+    matrix = tfidf(news)
     centroid = start_optimal(k, matrix)
     ii = 0
     while ii < 10:
@@ -249,5 +248,4 @@ def kmeans_optimal(k, news):
         centroid = new(cluster)
         ii += 1
         if ii == 10:
-            out = token__.labelize(news)
-            output(cluster, matrix, out)
+            output(cluster, matrix, news)
