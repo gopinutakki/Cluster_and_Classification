@@ -1,10 +1,11 @@
 __author__ = 'hanwang'
 import random, token__
-from tf_idf import tfidf, normalize
+from tf_idf import tfidf, normalize, tfidf_optimal
 
 k = 0
 matrix = {}
 news = {}
+
 
 #random start
 def start(k, matrix):
@@ -17,6 +18,20 @@ def start(k, matrix):
     for i in seed:
         centroid.append(matrix[i])
     return centroid
+
+
+def start_optimal(k, matrix):
+    centroid = []
+    seed = []
+    threshold = len(matrix) / k
+    while len(seed) < k:
+        seed.append(random.randint(0, threshold) + len(seed) * threshold)
+        seed = list(set(seed))
+    print seed
+    for i in seed:
+        centroid.append(matrix[i])
+    return centroid
+
 
 a = []
 b = []
@@ -53,6 +68,8 @@ def kernel_cos(centroid, matrix, k):
             table[i][j] = multi(matrix[i], centroid[j])
 
     for i in table:
+        if sum(i) == 0:
+            i[random.randint(0, len(i) - 1)] = 1
         for j in range(len(i)):
             if i[j] == max(i):
                 i[j] = 1
@@ -119,8 +136,8 @@ def new(cluster):
             tmp = 0
             for l in range(len(cluster[i])):
                 tmp += cluster[i][l][j]
-            new_centroid[-1].append(tmp)
-        normalize(new_centroid[-1])
+            new_centroid[i].append(tmp)
+        normalize(new_centroid[i])
     return new_centroid
 
 
@@ -156,7 +173,9 @@ def output(cluster, matrix, out):
                                     purity[iterator][topic] = 1
         print
         iterator += 1
-
+    print '================================================================='
+    for i in purity:
+        print purity[i]
     p = []
     for i in purity:
         tmp = []
@@ -188,7 +207,7 @@ def output(cluster, matrix, out):
             FPTN += len(out[out.keys()[i]]) * len(out[out.keys()[i + j]])
             j += 1
     TN = FPTN - FP
-    print P, N
+    print 'TP = ', TP, ' TN = ', TN, ' TP + FP =', P, 'TN + FN = ', N
     print 'RI = ' + str(float(TP + TN) / float(P + N))
 
 
@@ -219,3 +238,16 @@ def kmeans_euc(k, news):
             out = token__.labelize(news)
             output(cluster, matrix, out)
 
+
+def kmeans_optimal(k, news):
+    matrix = tfidf_optimal(news)
+    centroid = start_optimal(k, matrix)
+    ii = 0
+    while ii < 10:
+        cluster = kernel_cos(centroid, matrix, k)
+        print rss(cluster, centroid)
+        centroid = new(cluster)
+        ii += 1
+        if ii == 10:
+            out = token__.labelize(news)
+            output(cluster, matrix, out)

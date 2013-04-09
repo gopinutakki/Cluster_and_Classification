@@ -21,6 +21,7 @@ def searchnews(topic, news):
                 news[topic][i['Title']] = i['Description']
             if len(news[topic]) == 30:
                 break
+    file('./news.txt', 'w').writelines(str(news))
 
 
 def searchcategory(topic, category, news):
@@ -39,3 +40,4 @@ def searchcategory(topic, category, news):
                 print  len(news[category][topic])
             if len(news[category][topic]) == 15:
                 break
+    file('./guess.txt', 'w').writelines(str(news))

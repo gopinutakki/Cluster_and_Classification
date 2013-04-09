@@ -30,7 +30,9 @@ def classify(guess, p, category):
         print category[i] + ':'
         for j in result[i].keys():
             print '  ' + category[result[i][j]] + '  ' + j
-
+    TP_ = 0
+    FP_ = 0
+    FN_ = 0
     for i in range(len(result)):
         TP = result[i].values().count(i)
         FP = len(result[i].values()) - TP
@@ -41,4 +43,7 @@ def classify(guess, p, category):
         print category[i] + ': ' + 'TP = ' + str(TP) + ',FP = ' + str(FP) + ',FN = ' + str(FN)
         print '         Precision = ' + str(float(TP) / float(TP + FP)) + ', Recall = ' + str(float(TP) / float(TP + FN))
         print '         F1 = ' + str(float(2 * TP) / float(2 * TP + FP + FN))
-
+        TP_ += TP
+        FP_ += FP
+        FN_ += FN
+    print '         Microaveraged F1 = ' + str(float(2 * TP_) / float(2 * TP_ + FP_ + FN_))

@@ -7,7 +7,7 @@ def idf(news):
     tok = token__.tokenize(news)
     text = []
     for i in tok:
-        text += tok[i]
+        text += list(set(tok[i]))
 
     idf = {}
     for word in text:
@@ -15,6 +15,21 @@ def idf(news):
     return idf
 
 vec = []
+
+
+def idf_optimal(news):
+    c = idf(news)
+    print len(c)
+    wordlist = c.keys()
+    tmp = []
+    for word in wordlist:
+        tmp.append((word, c[word]))
+    tmpsorted = sorted(tmp, key=lambda x: x[1])
+    idf_o = {}
+    for word in tmpsorted[len(tmp) / 10:]:
+        idf_o[word[0]] = word[1]
+    print len(idf_o)
+    return idf_o
 
 
 def normalize(vec):
@@ -40,7 +55,7 @@ def tfidf(news):
 
     for t in range(len(label)):
         for i in tok[label[t]]:
-            matrix[t][wordlist.index(i)] = tok[label[t]].count(i) * c[i]
+            matrix[t][wordlist.index(i)] = (1 + math.log(tok[label[t]].count(i))) * c[i]
 
     #normalization
     for i in matrix:
@@ -49,5 +64,26 @@ def tfidf(news):
     return matrix
 
 
+def tfidf_optimal(news):
+    c = idf_optimal(news)
+    wordlist = c.keys()
+    tok = token__.tokenize(news)
+    label = tok.keys()
+    matrix = {}
+
+    for t in range(len(tok)):
+        matrix[t] = []
+        for word in range(len(c)):
+            matrix[t].append(0)
+
+    for t in range(len(label)):
+        for i in tok[label[t]]:
+            if i in wordlist:
+                matrix[t][wordlist.index(i)] = (1 + math.log(tok[label[t]].count(i))) * c[i]
+
+    #normalization
+    for i in matrix:
+        normalize(matrix[i])
+    return matrix
 
 

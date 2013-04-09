@@ -11,4 +11,4 @@ if __name__ == '__main__':
 
     k = raw_input('input an integer k: ')
     k = int(k)
-    k_means.kmeans_cos(k, news)
+    k_means.kmeans_optimal(k, news)

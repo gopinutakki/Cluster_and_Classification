@@ -10,7 +10,10 @@ def tokenize(news):
         for title in news[topic].keys():
             tmp = []
             tmp += re.findall(r"[a-z']+", title.lower())
-            tmp += re.findall(r"[a-z']+", news[topic][title].lower())
+            tmp += re.findall(r"[a-z']+", title.lower())
+            tmp += re.findall(r"[a-z']+", title.lower())
+            tmp += re.findall(r"[a-z']+", title.lower())
+            tmp += re.findall(r"[a-z']+", title.lower())
             tmp += re.findall(r"[a-z']+", news[topic][title].lower())
             tok[title] = tmp
 
