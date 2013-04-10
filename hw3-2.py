@@ -26,8 +26,8 @@ if __name__ == '__main__':
     s = json.dumps(guess)
     f = open('./guess.json', 'w')
     f.write(s + "\n")
-    f.close()
-    '''
+    f.close()'''
+
     f = open('./training.json')
     news = json.load(f)
     f.close()

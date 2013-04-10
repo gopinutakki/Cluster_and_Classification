@@ -30,9 +30,9 @@ def classify(guess, p, category):
         print category[i] + ':'
         for j in result[i].keys():
             print '  ' + category[result[i][j]] + '  ' + j
-    TP_ = 0
-    FP_ = 0
-    FN_ = 0
+    TP_ = 0 #overall TP
+    FP_ = 0 #overall FP
+    FN_ = 0 #overall FN
     for i in range(len(result)):
         TP = result[i].values().count(i)
         FP = len(result[i].values()) - TP

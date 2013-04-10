@@ -95,3 +95,45 @@ def tfidf_optimal(news):
             f.write(str(matrix[i]) + '\n')
     f.close()
     return matrix
+
+
+def idf_knn(news, category):
+    tok = token__.tokenize2(news, category)
+    text = []
+    for topic in tok:
+        for i in tok[topic]:
+            text += list(set(tok[topic][i]))
+
+    idf = {}
+    for word in text:
+        idf[word] = math.log(float(len(text)) / float(text.count(word))) / math.log(2)
+    print len(idf)
+    return idf
+
+
+def tfidf_knn(news, category):
+    c = idf_knn(news, category)
+    wordlist = c.keys()
+    tok = token__.tokenize2(news, category)
+    label = tok.keys()
+    matrix = {}
+    print 'hello'
+    for topic in label:
+        matrix[topic] = {}
+        for t in tok[topic].keys():
+            matrix[topic][t] = []
+            for i in range(len(c)):
+                matrix[topic][t].append(0)
+    print 'world'
+    for topic in label:
+        for i in tok[topic].keys():
+            for word in tok[topic][i]:
+                if word in wordlist:
+                    matrix[topic][i][wordlist.index(i)] = tok[topic][i].count(i) * c[word]
+    print 'today'
+    #normalization
+    for topic in matrix:
+        for i in matrix[topic]:
+            normalize(matrix[topic][i])
+    return matrix
+
